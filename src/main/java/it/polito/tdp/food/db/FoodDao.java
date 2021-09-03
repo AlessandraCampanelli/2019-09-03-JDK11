@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import it.polito.tdp.food.model.Adiacenza;
 import it.polito.tdp.food.model.Condiment;
 import it.polito.tdp.food.model.Food;
 import it.polito.tdp.food.model.Portion;
@@ -41,7 +43,38 @@ public class FoodDao {
 		}
 
 	}
-	
+	public List<String> getVertix(Integer calorie){
+		String sql = "SELECT DISTINCT portion_display_name "
+				+ "FROM `portion` "
+				+ "WHERE calories<?";
+				
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, calorie);
+			List<String> list = new ArrayList<>() ;
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				try {
+					list.add(res.getString("portion_display_name"));
+							
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+			
+			conn.close();
+			return list ;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null ;
+		}
+
+	}
 	public List<Condiment> listAllCondiments(){
 		String sql = "SELECT * FROM condiment" ;
 		try {
@@ -72,6 +105,41 @@ public class FoodDao {
 			e.printStackTrace();
 			return null ;
 		}
+	}
+	public List<Adiacenza> getAdiacenza(){
+		String sql = "SELECT  p.portion_display_name AS pd, p2.portion_display_name AS pd2 ,COUNT(DISTINCT p.portion_id) peso "
+				+ "FROM `portion` AS p,`portion` AS p2 "
+				+ "WHERE p.food_code=p2.food_code AND p.portion_id<> p2.portion_id "
+				+ "GROUP BY  p.portion_display_name , p2.portion_display_name";
+				
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+
+			List<Adiacenza> list = new ArrayList<>() ;
+			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				try {
+					
+					if(res.getString("pd")!=null && res.getString("pd2")!=null)
+					list.add(new Adiacenza(res.getString("pd"),res.getString("pd2"),res.getInt("peso")));
+							
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+			
+			conn.close();
+			return list ;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null ;
+		}
+
 	}
 	
 	public List<Portion> listAllPortions(){

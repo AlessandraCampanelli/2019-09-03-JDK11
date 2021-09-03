@@ -5,7 +5,10 @@
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.food.model.Adiacenza;
 import it.polito.tdp.food.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,7 +43,7 @@ public class FoodController {
     private Button btnCammino; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxPorzioni"
-    private ComboBox<?> boxPorzioni; // Value injected by FXMLLoader
+    private ComboBox<String> boxPorzioni; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -62,7 +65,19 @@ public class FoodController {
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Creazione grafo...");
-    	
+    	String calorie = txtCalorie.getText();  
+    	Integer caloriee;
+    	try {
+    		caloriee= Integer.parseInt(calorie);
+    		
+    	}catch(NumberFormatException e) {
+    		txtResult.setText("Inserire il numero di calorie");
+    		return;
+    	}
+    	this.model.creaGrafo(caloriee);
+    	List <Adiacenza>  ad= this.model.getAdiacenza();
+    	for(Adiacenza a: ad)
+    		txtResult.appendText(a.toString()+"\n");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
