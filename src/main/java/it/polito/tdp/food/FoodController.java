@@ -5,11 +5,13 @@
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.food.model.Adiacenza;
 import it.polito.tdp.food.model.Model;
+import it.polito.tdp.food.model.StringPeso;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -52,13 +54,40 @@ public class FoodController {
     void doCammino(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Cerco cammino peso massimo...");
+    	String porzione = boxPorzioni.getValue();
+    	if(porzione==null)
+    	{
+    		txtResult.setText("selezionare porzione");
+    		return;
+    	}
+    	String s = txtPassi.getText();
+    	Integer numero;
+    	try {
+    		numero= Integer.parseInt(s);
+    		
+    	}catch(NumberFormatException e) {
+    		txtResult.setText("Inserire il numero di calorie");
+    		return;
+    	}
+    	List<String>lista = new ArrayList<>(this.model.trovaCammino(porzione, numero));
+    	for(String a:lista)
+    		txtResult.appendText(a.toString()+"\n");
     }
 
     @FXML
     void doCorrelate(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Cerco porzioni correlate...");
+    	String porzione = boxPorzioni.getValue();
+    	if(porzione==null)
+    	{
+    		txtResult.setText("selezionare porzione");
+    		return;
+    	}
+    	List <Adiacenza >lista = new ArrayList <>(this.model.getAdiacenza());
     	
+    	for(Adiacenza a:lista)
+    		txtResult.appendText(a.toString()+"\n");
     }
 
     @FXML
@@ -78,6 +107,8 @@ public class FoodController {
     	List <Adiacenza>  ad= this.model.getAdiacenza();
     	for(Adiacenza a: ad)
     		txtResult.appendText(a.toString()+"\n");
+    	
+    	boxPorzioni.getItems().addAll(this.model.getVertexSet());
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

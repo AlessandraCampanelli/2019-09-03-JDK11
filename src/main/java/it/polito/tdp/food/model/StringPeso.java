@@ -51,7 +51,7 @@ public boolean equals(Object obj) {
 }
 @Override
 public String toString() {
-	return " Adiacente   " + a + ", peso" + peso + "]";
+	return  a + "   peso" + peso;
 }
 
 }

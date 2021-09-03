@@ -62,7 +62,7 @@ public boolean equals(Object obj) {
 }
 @Override
 public String toString() {
-	return "Adiacenza [portion1=" + portion1 + ", portion2=" + portion2 + ", peso=" + peso + "]";
+	return  portion1 + "----" + portion2 + "   peso  " + peso + "]";
 }
 
 
